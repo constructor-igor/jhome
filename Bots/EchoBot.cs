@@ -47,32 +47,36 @@ namespace Microsoft.BotBuilderSamples.Bots
                 case "gematria":
                     if (isCancel){
                         userProfile.DialogState = "";
+                        await SendSuggestedActionsAsync("Main menu", turnContext, cancellationToken);
                     } else{
                         GematriaCalculator calculator = new GematriaCalculator();
                         int gematriaValue = calculator.Calculate(message);
-                        var replyText = $"{gematriaValue}";
-                        await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
-                        await SendCancelActionsAsync(turnContext, cancellationToken);
+                        var replyText = $"Standard Gematria of '{message}' = gematriaValue";
+                        replyText = replyText.Replace("gematriaValue", "\u200e"+gematriaValue.ToString());
+                        await turnContext.SendActivityAsync(MessageFactory.Text(replyText), cancellationToken);
+                        await SendCancelActionsAsync("Input text for gematria", turnContext, cancellationToken);
                     }
                     break;
                 default:
                     switch (message.ToLower()){
                         case "gematria":
                             userProfile.DialogState = "gematria";
-                            await turnContext.SendActivityAsync(MessageFactory.Text($"Input text for gematria", $"Input text for gematria"), cancellationToken);
-                            await SendCancelActionsAsync(turnContext, cancellationToken);
+                            string replyText = "Input text for gematria";
+                            // await turnContext.SendActivityAsync(MessageFactory.Text($"Input text for gematria", $"Input text for gematria"), cancellationToken);
+                            await SendCancelActionsAsync(replyText, turnContext, cancellationToken);
                         break;
                         case "today":
+                            //https://stackoverflow.com/questions/6245546/how-can-i-get-todays-jewish-date-in-c
                             HebrewCalendar hc = new HebrewCalendar();
                         break;
                         case "/help":
                         case "/commands":
                         case "/start":
-                            await SendSuggestedActionsAsync(turnContext, cancellationToken);
+                            await SendSuggestedActionsAsync("Commands", turnContext, cancellationToken);
                             break;
                         default:                    
-                            var replyText = $"Echo: {message} ({turnContext.Activity.LocalTimestamp})";
-                            await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                            var defaultReplyText = $"Echo: {message} ({turnContext.Activity.LocalTimestamp})";
+                            await turnContext.SendActivityAsync(MessageFactory.Text(defaultReplyText), cancellationToken);
                             // await SendSuggestedActionsAsync(turnContext, cancellationToken);
                             break;
                     }
@@ -95,9 +99,9 @@ namespace Microsoft.BotBuilderSamples.Bots
         /// clicks one of the buttons the text value from the "CardAction" will be
         /// displayed in the channel just as if the user entered the text. There are multiple
         /// "ActionTypes" that may be used for different situations.
-        private static async Task SendSuggestedActionsAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+        private static async Task SendSuggestedActionsAsync(string text, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var reply = MessageFactory.Text("Commands");
+            var reply = MessageFactory.Text(text);
             reply.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
@@ -110,9 +114,9 @@ namespace Microsoft.BotBuilderSamples.Bots
             };
             await turnContext.SendActivityAsync(reply, cancellationToken);
         }
-        private static async Task SendCancelActionsAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+        private static async Task SendCancelActionsAsync(string text, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var reply = MessageFactory.Text("");
+            var reply = MessageFactory.Text(text);
             reply.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()

@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
+    // https://en.wikipedia.org/wiki/Windows-1255
+    // https://en.wikipedia.org/wiki/Gematria
+
     public class GematriaCalculator
     {
         Dictionary<int, int> m_gematriaDictionary = new Dictionary<int, int>();
