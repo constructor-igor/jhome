@@ -49,7 +49,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                 case "gematria":
                     if (isCancel){
                         userProfile.DialogState = "";
-                        await SendSuggestedActionsAsync("Main menu", turnContext, cancellationToken);
+                        await SendSuggestedActionsAsync(turnContext, cancellationToken);
                     } else{
                         GematriaCalculator calculator = new GematriaCalculator();
                         int gematriaValue = calculator.Calculate(message);
@@ -73,7 +73,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                             HebrewCalenderManager manager = new HebrewCalenderManager();
                             string hebrewDate = manager.GetHebrewDateAsString(today);
                             await turnContext.SendActivityAsync(MessageFactory.Text(hebrewDate), cancellationToken);
-                            await SendSuggestedActionsAsync("Main menu", turnContext, cancellationToken);
+                            await SendSuggestedActionsAsync(turnContext, cancellationToken);
                         break;
                         case "/help":
                         case "/commands":
@@ -109,7 +109,10 @@ namespace Microsoft.BotBuilderSamples.Bots
         /// "ActionTypes" that may be used for different situations.
         private static async Task SendSuggestedActionsAsync(string text, ITurnContext turnContext, CancellationToken cancellationToken)
         {
+            if (text == null)
+                text = "";
             var reply = MessageFactory.Text(text);
+            
             reply.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
@@ -121,6 +124,9 @@ namespace Microsoft.BotBuilderSamples.Bots
                 },
             };
             await turnContext.SendActivityAsync(reply, cancellationToken);
+        }
+        private static async Task SendSuggestedActionsAsync(ITurnContext turnContext, CancellationToken cancellationToken){
+            await SendSuggestedActionsAsync(null, turnContext, cancellationToken);
         }
         private static async Task SendCancelActionsAsync(string text, ITurnContext turnContext, CancellationToken cancellationToken)
         {
