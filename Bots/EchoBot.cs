@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ namespace Microsoft.BotBuilderSamples.Bots
 {
     /*
         file attachments sample: https://habr.com/ru/company/microsoft/blog/498224/
-
+        bots
+            @zmanim_bot
     */
     public class EchoBot : ActivityHandler
     {
@@ -67,15 +69,21 @@ namespace Microsoft.BotBuilderSamples.Bots
                         break;
                         case "today":
                             //https://stackoverflow.com/questions/6245546/how-can-i-get-todays-jewish-date-in-c
-                            HebrewCalendar hc = new HebrewCalendar();
+                            DateTime today = DateTime.Now;
+                            HebrewCalenderManager manager = new HebrewCalenderManager();
+                            string hebrewDate = manager.GetHebrewDateAsString(today);
+                            await turnContext.SendActivityAsync(MessageFactory.Text(hebrewDate), cancellationToken);
+                            await SendSuggestedActionsAsync("Main menu", turnContext, cancellationToken);
                         break;
                         case "/help":
                         case "/commands":
                         case "/start":
                             await SendSuggestedActionsAsync("Commands", turnContext, cancellationToken);
                             break;
-                        default:                    
-                            var defaultReplyText = $"Echo: {message} ({turnContext.Activity.LocalTimestamp})";
+                        default:
+                            var localTime =  turnContext.Activity.LocalTimestamp;
+                            string localTimeStr = localTime.ToString();
+                            var defaultReplyText = $"Echo: {message} ({localTimeStr})";
                             await turnContext.SendActivityAsync(MessageFactory.Text(defaultReplyText), cancellationToken);
                             // await SendSuggestedActionsAsync(turnContext, cancellationToken);
                             break;
