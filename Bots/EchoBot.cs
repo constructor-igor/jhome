@@ -91,7 +91,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                             //await turnContext.SendActivityAsync(MessageFactory.Text(defaultReplyText), cancellationToken);
                             // await SendSuggestedActionsAsync(turnContext, cancellationToken);
                             await turnContext.SendActivityAsync(MessageFactory.Text($"unknown command '{message}'"), cancellationToken);
-                            await SendSuggestedActionsAsync("Commands", turnContext, cancellationToken);
+                            await SendSuggestedActionsAsync(turnContext, cancellationToken);
                             break;
                     }
                     break;
