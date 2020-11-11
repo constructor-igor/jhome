@@ -16,6 +16,10 @@ namespace Microsoft.BotBuilderSamples.Bots
         file attachments sample: https://habr.com/ru/company/microsoft/blog/498224/
         bots
             @zmanim_bot
+            https://t.me/fourty_nine
+            https://t.me/MMGitik
+        TODO:
+        - encoding https://stackoverflow.com/questions/7236550/c-sharp-encoding-converting-latin-to-hebrew
     */
     public class EchoBot : ActivityHandler
     {
@@ -81,11 +85,13 @@ namespace Microsoft.BotBuilderSamples.Bots
                             await SendSuggestedActionsAsync("Commands", turnContext, cancellationToken);
                             break;
                         default:
-                            var localTime =  turnContext.Activity.LocalTimestamp;
-                            string localTimeStr = localTime.ToString();
-                            var defaultReplyText = $"Echo: {message} ({localTimeStr})";
-                            await turnContext.SendActivityAsync(MessageFactory.Text(defaultReplyText), cancellationToken);
+                            //var localTime =  turnContext.Activity.LocalTimestamp;
+                            //string localTimeStr = localTime.ToString();
+                            //var defaultReplyText = $"Echo: {message} ({localTimeStr})";
+                            //await turnContext.SendActivityAsync(MessageFactory.Text(defaultReplyText), cancellationToken);
                             // await SendSuggestedActionsAsync(turnContext, cancellationToken);
+                            await turnContext.SendActivityAsync(MessageFactory.Text($"unknown command '{message}'"), cancellationToken);
+                            await SendSuggestedActionsAsync("Commands", turnContext, cancellationToken);
                             break;
                     }
                     break;
